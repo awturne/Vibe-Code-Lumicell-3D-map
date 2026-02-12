@@ -25,10 +25,50 @@ let dragOrigin = { x: 0, y: 0 };
 function readFileAsDataUrl(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
     reader.onerror = () => reject(new Error(`Failed to read ${file.name}`));
+
+    if (fileIsTiff(file)) {
+      reader.onload = () => {
+        try {
+          resolve(tiffArrayBufferToDataUrl(reader.result));
+        } catch (error) {
+          reject(error);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+      return;
+    }
+
+    reader.onload = () => resolve(reader.result);
     reader.readAsDataURL(file);
   });
+}
+
+function fileIsTiff(file) {
+  const name = (file.name || "").toLowerCase();
+  return name.endsWith(".tif") || name.endsWith(".tiff") || file.type === "image/tiff";
+}
+
+function tiffArrayBufferToDataUrl(buffer) {
+  if (!window.UTIF) {
+    throw new Error("TIFF decoder is unavailable in this browser session.");
+  }
+
+  const ifds = UTIF.decode(buffer);
+  if (!ifds.length) throw new Error("No TIFF image data found.");
+
+  UTIF.decodeImage(buffer, ifds[0]);
+  const rgba = UTIF.toRGBA8(ifds[0]);
+  const width = ifds[0].width;
+  const height = ifds[0].height;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  const imageData = new ImageData(new Uint8ClampedArray(rgba), width, height);
+  ctx.putImageData(imageData, 0, 0);
+  return canvas.toDataURL("image/png");
 }
 
 function loadImage(src) {
@@ -100,18 +140,35 @@ async function handleUpload(event) {
   }
 
   const selected = files.slice(0, allowed);
+  let added = 0;
+
   for (const file of selected) {
-    const imageUrl = await readFileAsDataUrl(file);
-    const image = await loadImage(imageUrl);
-    const avg = circularAverageIntensity(image);
-    uploads.push({ fileName: file.name, imageUrl, orientation: "", avg });
+    try {
+      const imageUrl = await readFileAsDataUrl(file);
+      const image = await loadImage(imageUrl);
+      const avg = circularAverageIntensity(image);
+      uploads.push({ fileName: file.name, imageUrl, orientation: "", avg });
+      added += 1;
+    } catch (error) {
+      captureStatus.textContent = `Could not read ${file.name}. TIFF/PNG/JPG supported.`;
+      console.error(error);
+    }
+  }
+
+  if (!added) {
+    event.target.value = "";
+    renderCapturedGrid();
+    refreshBuildState();
+    return;
   }
 
   if (files.length > allowed) {
     captureStatus.textContent = `Only ${allowed} additional image(s) accepted (max 6).`;
   } else {
-    captureStatus.textContent = `Uploaded ${selected.length} image(s). Assign orientation for each.`;
+    captureStatus.textContent = `Uploaded ${added} image(s). Assign orientation for each.`;
   }
+
+  event.target.value = "";
 
   renderCapturedGrid();
   refreshBuildState();
@@ -126,6 +183,7 @@ async function selectTile(index) {
   const avg = circularAverageIntensity(image);
   item.avg = avg;
   latestAverageLabel.textContent = avg.toFixed(1);
+
   renderCapturedGrid();
   refreshBuildState();
 }
@@ -133,6 +191,7 @@ async function selectTile(index) {
 function removeUpload(index) {
   uploads.splice(index, 1);
   captureStatus.textContent = "Removed upload.";
+
   renderCapturedGrid();
   refreshBuildState();
 }
@@ -155,6 +214,7 @@ function setOrientation(index, orientation) {
 
   uploads[index].orientation = orientation;
   captureStatus.textContent = "Orientation updated.";
+
   renderCapturedGrid();
   refreshBuildState();
 }

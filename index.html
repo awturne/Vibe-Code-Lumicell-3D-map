@@ -27,7 +27,7 @@
         <aside class="baseline-sidebar">
           <h2>Establish baseline</h2>
           <ul>
-            <li>Upload 6 baseline images (PNG/JPG).</li>
+            <li>Upload 6 baseline images (PNG/JPG/TIF).</li>
             <li>Assign each upload to a unique orientation.</li>
             <li>Average intensity is computed inside the circular field.</li>
             <li>When all six orientations are assigned, continue to live cube map.</li>
@@ -35,7 +35,7 @@
 
           <div class="capture-controls">
             <label for="image-upload">Upload baseline images (up to 6)</label>
-            <input id="image-upload" type="file" accept="image/*" multiple />
+            <input id="image-upload" type="file" accept="image/*,.tif,.tiff" multiple />
             <button id="build-cube-btn" disabled>Build cavity cube from uploads</button>
             <p id="capture-status" class="status"></p>
           </div>
@@ -79,6 +79,7 @@
       </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

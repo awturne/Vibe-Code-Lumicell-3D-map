@@ -101,6 +101,12 @@ button:disabled { opacity: 0.5; }
   grid-template-rows: 1fr auto auto;
 }
 
+
+.capture-item.selected {
+  border-color: #8ad848;
+  box-shadow: 0 0 0 2px rgba(138, 216, 72, 0.3);
+}
+
 .capture-item.empty::before {
   content: "";
   position: absolute;
@@ -143,13 +149,13 @@ button:disabled { opacity: 0.5; }
   border-radius: 50%;
   border: 1px solid #7486aa;
 }
-.viewer-watermark { position: absolute; color: #00d2ff; font-size: clamp(1rem, 2vw, 2.1rem); }
+.viewer-help { position: absolute; bottom: 1rem; color: #9cb6e8; font-size: 0.95rem; }
 .meta { margin: 0.45rem 0; color: var(--muted); }
 
 .card { background: #171c27; border: 1px solid #263044; border-radius: 12px; padding: 1rem; }
 .live-layout { position: relative; padding: 1rem; }
-.live-feed-card canvas { width: 100%; border-radius: 8px; border: 1px solid #2b3850; }
-.cube-overlay-card { position: absolute; top: 2rem; right: 2rem; width: 300px; }
+.live-step-card { min-height: 120px; }
+.cube-overlay-card { position: absolute; top: 2rem; right: 2rem; width: 320px; }
 .cube-scene { height: 220px; display: grid; place-items: center; perspective: 800px; }
 .cube { position: relative; width: 120px; height: 120px; transform-style: preserve-3d; transform: rotateX(-22deg) rotateY(35deg); cursor: grab; }
 .cube.dragging { cursor: grabbing; }

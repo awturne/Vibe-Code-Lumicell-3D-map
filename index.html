@@ -29,6 +29,7 @@
           <ul>
             <li>Upload 6 baseline images (PNG/JPG/TIF).</li>
             <li>Assign each upload to a unique orientation.</li>
+            <li>Drag to center and wheel to zoom inside the circular field.</li>
             <li>Average intensity is computed inside the circular field.</li>
             <li>When all six orientations are assigned, continue to live cube map.</li>
           </ul>
@@ -46,7 +47,7 @@
         <section class="baseline-viewer">
           <div class="viewer-stage">
             <canvas id="preview-canvas" width="900" height="900"></canvas>
-            <p class="viewer-watermark">Simulation mode. Not for clinical use!</p>
+            <p class="viewer-help">Drag to center • Mouse wheel to zoom</p>
           </div>
           <p class="meta">Selected image circular avg intensity: <span id="latest-average">--</span></p>
         </section>
@@ -54,10 +55,9 @@
 
       <section id="live-page" class="page">
         <div class="live-layout">
-          <div class="card live-feed-card">
-            <h2>Live image + cavity map</h2>
-            <p>Live feed is still mocked in this prototype.</p>
-            <canvas id="live-canvas" width="960" height="540"></canvas>
+          <div class="card live-step-card">
+            <h2>Cavity map</h2>
+            <p>Live camera feed is hidden for this prototype step.</p>
           </div>
 
           <aside class="card cube-overlay-card">

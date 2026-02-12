@@ -12,15 +12,18 @@ const previewCtx = previewCanvas.getContext("2d");
 const latestAverageLabel = document.getElementById("latest-average");
 const captureGrid = document.getElementById("capture-grid");
 
-const liveCanvas = document.getElementById("live-canvas");
-const liveCtx = liveCanvas.getContext("2d");
 const cubeEl = document.getElementById("cube");
 const cubeLegend = document.getElementById("cube-legend");
 
 let cubeRotationX = -22;
 let cubeRotationY = 35;
-let dragging = false;
-let dragOrigin = { x: 0, y: 0 };
+let draggingCube = false;
+let cubeDragOrigin = { x: 0, y: 0 };
+
+let selectedTileIndex = -1;
+let selectedImage = null;
+let draggingPreview = false;
+let previewDragOrigin = { x: 0, y: 0 };
 
 function readFileAsDataUrl(file) {
   return new Promise((resolve, reject) => {
@@ -80,40 +83,58 @@ function loadImage(src) {
   });
 }
 
-function drawCircularPreview(image) {
+function getCircleGeometry() {
   const { width, height } = previewCanvas;
   const radius = width * 0.49;
-  const cx = width / 2;
-  const cy = height / 2;
+  return { width, height, radius, cx: width / 2, cy: height / 2 };
+}
+
+function ensureTransform(upload, image) {
+  if (upload.scale && upload.scale > 0) return;
+
+  const { radius } = getCircleGeometry();
+  const diameter = radius * 2;
+  const baseScale = Math.max(diameter / image.width, diameter / image.height);
+
+  upload.scale = baseScale;
+  upload.offsetX = 0;
+  upload.offsetY = 0;
+}
+
+function drawCircularPreviewWithTransform(image, transform) {
+  const { width, height, radius, cx, cy } = getCircleGeometry();
 
   previewCtx.clearRect(0, 0, width, height);
   previewCtx.save();
   previewCtx.beginPath();
   previewCtx.arc(cx, cy, radius, 0, Math.PI * 2);
   previewCtx.clip();
-  previewCtx.drawImage(image, 0, 0, width, height);
+
+  const drawWidth = image.width * transform.scale;
+  const drawHeight = image.height * transform.scale;
+  const x = cx - drawWidth / 2 + transform.offsetX;
+  const y = cy - drawHeight / 2 + transform.offsetY;
+  previewCtx.drawImage(image, x, y, drawWidth, drawHeight);
   previewCtx.restore();
+
+  previewCtx.strokeStyle = "#7486aa";
+  previewCtx.lineWidth = 3;
+  previewCtx.beginPath();
+  previewCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+  previewCtx.stroke();
 }
 
-function circularAverageIntensity(image) {
-  const off = document.createElement("canvas");
-  off.width = 360;
-  off.height = 360;
-  const ctx = off.getContext("2d");
-  ctx.drawImage(image, 0, 0, off.width, off.height);
-
-  const { data } = ctx.getImageData(0, 0, off.width, off.height);
-  const radius = off.width * 0.49;
-  const cx = off.width / 2;
-  const cy = off.height / 2;
+function circularAverageFromPreview() {
+  const { width, radius, cx, cy } = getCircleGeometry();
+  const { data } = previewCtx.getImageData(0, 0, width, width);
 
   let total = 0;
   let count = 0;
 
   for (let i = 0; i < data.length; i += 4) {
     const idx = i / 4;
-    const x = idx % off.width;
-    const y = Math.floor(idx / off.width);
+    const x = idx % width;
+    const y = Math.floor(idx / width);
     const dx = x - cx;
     const dy = y - cy;
     if (Math.hypot(dx, dy) > radius) continue;
@@ -121,12 +142,23 @@ function circularAverageIntensity(image) {
     const r = data[i];
     const g = data[i + 1];
     const b = data[i + 2];
-    const intensity = (r + g + b) / 3;
-    total += intensity;
+    total += (r + g + b) / 3;
     count += 1;
   }
 
   return count ? total / count : 0;
+}
+
+function updateSelectedAverage() {
+  if (selectedTileIndex < 0 || !selectedImage) return;
+  const upload = uploads[selectedTileIndex];
+  if (!upload) return;
+
+  drawCircularPreviewWithTransform(selectedImage, upload);
+  upload.avg = circularAverageFromPreview();
+  latestAverageLabel.textContent = upload.avg.toFixed(1);
+  renderCapturedGrid();
+  refreshBuildState();
 }
 
 async function handleUpload(event) {
@@ -146,8 +178,11 @@ async function handleUpload(event) {
     try {
       const imageUrl = await readFileAsDataUrl(file);
       const image = await loadImage(imageUrl);
-      const avg = circularAverageIntensity(image);
-      uploads.push({ fileName: file.name, imageUrl, orientation: "", avg });
+      const upload = { fileName: file.name, imageUrl, orientation: "", avg: 0, scale: 0, offsetX: 0, offsetY: 0 };
+      ensureTransform(upload, image);
+      drawCircularPreviewWithTransform(image, upload);
+      upload.avg = circularAverageFromPreview();
+      uploads.push(upload);
       added += 1;
     } catch (error) {
       captureStatus.textContent = `Could not read ${file.name}. TIFF/PNG/JPG supported.`;
@@ -168,30 +203,39 @@ async function handleUpload(event) {
     captureStatus.textContent = `Uploaded ${added} image(s). Assign orientation for each.`;
   }
 
-  event.target.value = "";
+  if (selectedTileIndex < 0 && uploads.length) {
+    await selectTile(0);
+  } else {
+    renderCapturedGrid();
+    refreshBuildState();
+  }
 
-  renderCapturedGrid();
-  refreshBuildState();
+  event.target.value = "";
 }
 
 async function selectTile(index) {
   const item = uploads[index];
   if (!item) return;
-  const image = await loadImage(item.imageUrl);
-  drawCircularPreview(image);
 
-  const avg = circularAverageIntensity(image);
-  item.avg = avg;
-  latestAverageLabel.textContent = avg.toFixed(1);
-
-  renderCapturedGrid();
-  refreshBuildState();
+  selectedTileIndex = index;
+  selectedImage = await loadImage(item.imageUrl);
+  ensureTransform(item, selectedImage);
+  updateSelectedAverage();
 }
 
 function removeUpload(index) {
   uploads.splice(index, 1);
-  captureStatus.textContent = "Removed upload.";
 
+  if (selectedTileIndex === index) {
+    selectedTileIndex = -1;
+    selectedImage = null;
+    previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+    latestAverageLabel.textContent = "--";
+  } else if (selectedTileIndex > index) {
+    selectedTileIndex -= 1;
+  }
+
+  captureStatus.textContent = "Removed upload.";
   renderCapturedGrid();
   refreshBuildState();
 }
@@ -214,7 +258,6 @@ function setOrientation(index, orientation) {
 
   uploads[index].orientation = orientation;
   captureStatus.textContent = "Orientation updated.";
-
   renderCapturedGrid();
   refreshBuildState();
 }
@@ -242,6 +285,10 @@ function renderCapturedGrid() {
       card.append(footer);
       captureGrid.append(card);
       continue;
+    }
+
+    if (i === selectedTileIndex) {
+      card.classList.add("selected");
     }
 
     const img = document.createElement("img");
@@ -327,63 +374,79 @@ function goToLivePage() {
   baselinePage.classList.remove("active");
   livePage.classList.add("active");
   updateCubeFaces();
-  startLiveFeed();
-}
-
-function startLiveFeed() {
-  function drawFrame(t) {
-    const { width, height } = liveCanvas;
-    liveCtx.fillStyle = "rgb(8, 11, 18)";
-    liveCtx.fillRect(0, 0, width, height);
-
-    for (let i = 0; i < 12; i++) {
-      const pulse = Math.sin((t / 500) + i) * 0.5 + 0.5;
-      const radius = 35 + pulse * 90;
-      const x = ((i + 1) * width) / 13 + Math.sin(t / 800 + i) * 30;
-      const y = height / 2 + Math.cos(t / 650 + i * 1.6) * 120;
-      const gradient = liveCtx.createRadialGradient(x, y, 0, x, y, radius);
-      gradient.addColorStop(0, `rgba(255, 70, 70, ${0.14 + pulse * 0.2})`);
-      gradient.addColorStop(1, "rgba(255, 40, 40, 0)");
-      liveCtx.fillStyle = gradient;
-      liveCtx.beginPath();
-      liveCtx.arc(x, y, radius, 0, Math.PI * 2);
-      liveCtx.fill();
-    }
-
-    liveCtx.strokeStyle = "rgba(255,255,255,0.22)";
-    liveCtx.strokeRect(0, 0, width, height);
-    liveCtx.fillStyle = "#b8c4d8";
-    liveCtx.font = "16px sans-serif";
-    liveCtx.fillText("Simulated Live Basler Feed", 20, 30);
-    requestAnimationFrame(drawFrame);
-  }
-
-  requestAnimationFrame(drawFrame);
 }
 
 function applyCubeTransform() {
   cubeEl.style.transform = `rotateX(${cubeRotationX}deg) rotateY(${cubeRotationY}deg)`;
 }
 
+function clampScale(value, minScale) {
+  return Math.min(Math.max(value, minScale), minScale * 4);
+}
+
+previewCanvas.addEventListener("pointerdown", (event) => {
+  if (selectedTileIndex < 0) return;
+  draggingPreview = true;
+  previewDragOrigin = { x: event.clientX, y: event.clientY };
+  previewCanvas.setPointerCapture(event.pointerId);
+});
+
+previewCanvas.addEventListener("pointermove", (event) => {
+  if (!draggingPreview || selectedTileIndex < 0) return;
+  const upload = uploads[selectedTileIndex];
+  if (!upload) return;
+
+  const dx = event.clientX - previewDragOrigin.x;
+  const dy = event.clientY - previewDragOrigin.y;
+  previewDragOrigin = { x: event.clientX, y: event.clientY };
+
+  upload.offsetX += dx;
+  upload.offsetY += dy;
+  updateSelectedAverage();
+});
+
+previewCanvas.addEventListener("pointerup", (event) => {
+  draggingPreview = false;
+  previewCanvas.releasePointerCapture(event.pointerId);
+});
+
+previewCanvas.addEventListener("wheel", async (event) => {
+  if (selectedTileIndex < 0) return;
+  event.preventDefault();
+
+  const upload = uploads[selectedTileIndex];
+  if (!upload) return;
+
+  if (!selectedImage) {
+    selectedImage = await loadImage(upload.imageUrl);
+  }
+
+  const { radius } = getCircleGeometry();
+  const minScale = Math.max((radius * 2) / selectedImage.width, (radius * 2) / selectedImage.height);
+  const factor = event.deltaY < 0 ? 1.06 : 0.94;
+  upload.scale = clampScale(upload.scale * factor, minScale);
+  updateSelectedAverage();
+}, { passive: false });
+
 cubeEl.addEventListener("pointerdown", (event) => {
-  dragging = true;
-  dragOrigin = { x: event.clientX, y: event.clientY };
+  draggingCube = true;
+  cubeDragOrigin = { x: event.clientX, y: event.clientY };
   cubeEl.classList.add("dragging");
   cubeEl.setPointerCapture(event.pointerId);
 });
 
 cubeEl.addEventListener("pointermove", (event) => {
-  if (!dragging) return;
-  const dx = event.clientX - dragOrigin.x;
-  const dy = event.clientY - dragOrigin.y;
-  dragOrigin = { x: event.clientX, y: event.clientY };
+  if (!draggingCube) return;
+  const dx = event.clientX - cubeDragOrigin.x;
+  const dy = event.clientY - cubeDragOrigin.y;
+  cubeDragOrigin = { x: event.clientX, y: event.clientY };
   cubeRotationY += dx * 0.5;
   cubeRotationX -= dy * 0.5;
   applyCubeTransform();
 });
 
 cubeEl.addEventListener("pointerup", (event) => {
-  dragging = false;
+  draggingCube = false;
   cubeEl.classList.remove("dragging");
   cubeEl.releasePointerCapture(event.pointerId);
 });

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumicell Cavity Mapper Prototype</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section id="baseline-page" class="page active baseline-layout">
+        <header class="workflow-header cardless">
+          <button class="menu-btn" aria-label="Menu">☰</button>
+          <div class="workflow-steps">
+            <div class="step done"><span>1</span><small>Calibrate bright plate</small></div>
+            <div class="step done"><span>2</span><small>Calibrate dark plate</small></div>
+            <div class="step done"><span>3</span><small>Apply sterile cover</small></div>
+            <div class="step done"><span>4</span><small>Prepare for imaging</small></div>
+            <div class="step active"><span>5</span><small>Establish baseline</small></div>
+          </div>
+          <label class="probe-toggle">Probe Light
+            <input id="probe-toggle" type="checkbox" disabled />
+            <span>mocked</span>
+          </label>
+        </header>
+
+        <aside class="baseline-sidebar">
+          <h2>Establish baseline</h2>
+          <ul>
+            <li>Upload 6 baseline images (PNG/JPG).</li>
+            <li>Assign each upload to a unique orientation.</li>
+            <li>Average intensity is computed inside the circular field.</li>
+            <li>When all six orientations are assigned, continue to live cube map.</li>
+          </ul>
+
+          <div class="capture-controls">
+            <label for="image-upload">Upload baseline images (up to 6)</label>
+            <input id="image-upload" type="file" accept="image/*" multiple />
+            <button id="build-cube-btn" disabled>Build cavity cube from uploads</button>
+            <p id="capture-status" class="status"></p>
+          </div>
+
+          <div id="capture-grid" class="capture-grid"></div>
+        </aside>
+
+        <section class="baseline-viewer">
+          <div class="viewer-stage">
+            <canvas id="preview-canvas" width="900" height="900"></canvas>
+            <p class="viewer-watermark">Simulation mode. Not for clinical use!</p>
+          </div>
+          <p class="meta">Selected image circular avg intensity: <span id="latest-average">--</span></p>
+        </section>
+      </section>
+
+      <section id="live-page" class="page">
+        <div class="live-layout">
+          <div class="card live-feed-card">
+            <h2>Live image + cavity map</h2>
+            <p>Live feed is still mocked in this prototype.</p>
+            <canvas id="live-canvas" width="960" height="540"></canvas>
+          </div>
+
+          <aside class="card cube-overlay-card">
+            <h3>Bird's-Eye Cavity Cube</h3>
+            <p>Drag to rotate. Red intensity corresponds to baseline average signal per wall.</p>
+            <div id="cube-scene" class="cube-scene">
+              <div id="cube" class="cube">
+                <div class="face face-front" data-face="anterior"></div>
+                <div class="face face-back" data-face="posterior"></div>
+                <div class="face face-right" data-face="lateral"></div>
+                <div class="face face-left" data-face="medial"></div>
+                <div class="face face-top" data-face="superior"></div>
+                <div class="face face-bottom" data-face="inferior"></div>
+              </div>
+            </div>
+            <ul id="cube-legend" class="cube-legend"></ul>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

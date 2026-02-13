@@ -476,7 +476,7 @@ function applyCubeTransform() {
 }
 
 function applyMarginTransform() {
-  marginModelEl.style.transform = `rotateX(${marginRotationX}deg) rotateY(${marginRotationY}deg)`;
+  marginModelEl.style.transform = `translate(-50%, -50%) rotateX(${marginRotationX}deg) rotateY(${marginRotationY}deg)`;
 }
 
 function clampScale(value, minScale) {

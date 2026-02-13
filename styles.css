@@ -137,14 +137,15 @@ button:disabled { opacity: 0.5; }
 
 .baseline-viewer { padding: 0.75rem; }
 .viewer-stage {
-  height: calc(100vh - 90px);
+  height: 68vh;
+  min-height: 480px;
   background: var(--blue);
   display: grid;
   place-items: center;
   position: relative;
 }
 #preview-canvas {
-  width: min(92%, 980px);
+  width: min(74vw, 620px);
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   border: 1px solid #7486aa;
@@ -174,20 +175,30 @@ button:disabled { opacity: 0.5; }
 .face-bottom { transform: rotateX(-90deg) translateZ(60px); }
 .cube-legend { margin: .5rem 0 0; padding-left: 1.1rem; color: #a2b1cc; }
 
-.margin-scene { height: 220px; display: grid; place-items: center; perspective: 900px; }
-.margin-model {
+.margin-scene {
+  height: 260px;
   position: relative;
-  width: 170px;
-  height: 170px;
+  display: grid;
+  place-items: center;
+  perspective: 1000px;
+  isolation: isolate;
+}
+.margin-model {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 200px;
+  height: 200px;
   transform-style: preserve-3d;
-  transform: rotateX(-18deg) rotateY(28deg);
+  transform: translate(-50%, -50%) rotateX(-18deg) rotateY(28deg);
   cursor: grab;
+  z-index: 2;
 }
 .margin-model.dragging { cursor: grabbing; }
 .margin-face {
   position: absolute;
-  width: 90px;
-  height: 90px;
+  width: 96px;
+  height: 96px;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.45);
   display: grid;
@@ -198,57 +209,56 @@ button:disabled { opacity: 0.5; }
   text-shadow: 0 1px 2px #000;
   opacity: 0.95;
 }
-.margin-front { transform: translateZ(75px); }
-.margin-back { transform: rotateY(180deg) translateZ(75px); }
-.margin-left { transform: rotateY(-90deg) translateZ(75px); }
-.margin-right { transform: rotateY(90deg) translateZ(75px); }
-.margin-top { transform: rotateX(90deg) translateZ(75px); }
-.margin-bottom { transform: rotateX(-90deg) translateZ(75px); }
+.margin-front { transform: translateZ(92px); }
+.margin-back { transform: rotateY(180deg) translateZ(92px); }
+.margin-left { transform: rotateY(-90deg) translateZ(92px); }
+.margin-right { transform: rotateY(90deg) translateZ(92px); }
+.margin-top { transform: rotateX(90deg) translateZ(92px); }
+.margin-bottom { transform: rotateX(-90deg) translateZ(92px); }
 .tumor-core {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 96px;
-  height: 96px;
-  transform: translate(-50%, -50%) translateZ(4px);
+  width: 118px;
+  height: 118px;
+  transform: translate(-50%, -50%);
   border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
   background:
-    radial-gradient(circle at 30% 30%, rgba(255, 247, 211, 0.95) 0 16%, rgba(255, 193, 98, 0.92) 22%, rgba(245, 139, 47, 0.95) 52%, rgba(181, 79, 24, 0.98) 100%),
-    repeating-radial-gradient(circle at 65% 68%, rgba(255, 229, 168, 0.35) 0 4px, rgba(198, 87, 31, 0.24) 4px 8px);
-  border: 1px solid rgba(255, 237, 188, 0.95);
+    radial-gradient(circle at 32% 30%, rgba(255, 253, 231, 0.94) 0 14%, rgba(255, 214, 132, 0.9) 22%, rgba(236, 138, 47, 0.95) 58%, rgba(157, 63, 19, 0.98) 100%),
+    repeating-radial-gradient(circle at 62% 68%, rgba(255, 229, 168, 0.24) 0 5px, rgba(183, 72, 22, 0.2) 5px 10px);
+  border: 2px solid rgba(255, 229, 176, 0.9);
   box-shadow:
-    inset -18px -20px 30px rgba(104, 32, 6, 0.35),
-    inset 14px 16px 24px rgba(255, 216, 152, 0.35),
-    0 14px 22px rgba(0, 0, 0, 0.35),
-    0 0 24px rgba(255, 149, 41, 0.45);
+    inset -22px -20px 34px rgba(99, 35, 8, 0.38),
+    inset 12px 14px 24px rgba(255, 226, 154, 0.24),
+    0 18px 28px rgba(0, 0, 0, 0.38),
+    0 0 34px rgba(255, 145, 40, 0.38);
 }
 .tumor-core::before,
 .tumor-core::after {
   content: "";
   position: absolute;
   border-radius: 50%;
-  pointer-events: none;
 }
 .tumor-core::before {
-  width: 30px;
-  height: 22px;
-  left: 18px;
-  top: 12px;
-  background: radial-gradient(circle at 45% 50%, rgba(255, 255, 244, 0.92) 0 42%, rgba(255, 255, 255, 0) 85%);
-  filter: blur(0.5px);
+  width: 40px;
+  height: 28px;
+  left: 20px;
+  top: 16px;
+  background: radial-gradient(circle at 48% 52%, rgba(255, 255, 245, 0.92) 0 45%, rgba(255, 255, 255, 0) 88%);
+  filter: blur(0.6px);
 }
 .tumor-core::after {
-  width: 86px;
-  height: 86px;
-  left: 4px;
-  top: 6px;
-  border: 1px solid rgba(255, 227, 171, 0.26);
-  box-shadow: inset -10px -14px 20px rgba(126, 45, 15, 0.3);
+  inset: 8px;
+  border: 1px solid rgba(255, 225, 163, 0.26);
+  box-shadow: inset -12px -12px 20px rgba(112, 42, 14, 0.25);
 }
 
 @media (max-width: 1100px) {
   .baseline-layout { grid-template-columns: 1fr; }
-  .viewer-stage { height: 65vh; }
+  .viewer-stage { height: 56vh; min-height: 360px; }
   .live-layout { grid-template-columns: 1fr; }
+  #preview-canvas { width: min(86vw, 480px); }
   .workflow-steps { grid-template-columns: repeat(2, minmax(140px, 1fr)); gap: .5rem; }
 }

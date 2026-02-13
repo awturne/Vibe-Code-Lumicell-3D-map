@@ -9,7 +9,8 @@ This prototype now supports an **upload-first baseline workflow**:
 4. The app computes average pixel intensity **inside that circular field** for each upload.
 5. When all six orientations are assigned, build the cube and transition to cavity map mode.
 6. The cube face colors use a normalized jet map (blue = lowest average, red = highest average, with cyan/green/yellow in between), and the cube face placement matches the exploded margin model (front=superficial/inferior, back=posterior, left=lateral, right=medial, top=superior, bottom=anterior).
-7. The live step also generates a second rotatable tumor + shave-margin model at the same time, with a 3D-styled center tumor sphere plus margin faces in the same orientation layout.
+7. The live step also generates a second rotatable tumor + shave-margin model at the same time, with a 3D-styled center tumor sphere fixed in the middle of the exploded margin faces.
+8. Baseline image crop preview is intentionally smaller for a tidier upload workspace.
 
 ## Run locally
 

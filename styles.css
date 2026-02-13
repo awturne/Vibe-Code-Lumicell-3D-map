@@ -208,13 +208,42 @@ button:disabled { opacity: 0.5; }
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 88px;
-  height: 88px;
-  transform: translate(-50%, -50%) translateZ(0);
+  width: 96px;
+  height: 96px;
+  transform: translate(-50%, -50%) translateZ(4px);
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #ffe6a1 0 18%, #f8a242 45%, #ce6120 85%);
-  border: 1px solid rgba(255, 238, 198, 0.8);
-  box-shadow: 0 0 28px rgba(255, 149, 41, 0.45);
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 247, 211, 0.95) 0 16%, rgba(255, 193, 98, 0.92) 22%, rgba(245, 139, 47, 0.95) 52%, rgba(181, 79, 24, 0.98) 100%),
+    repeating-radial-gradient(circle at 65% 68%, rgba(255, 229, 168, 0.35) 0 4px, rgba(198, 87, 31, 0.24) 4px 8px);
+  border: 1px solid rgba(255, 237, 188, 0.95);
+  box-shadow:
+    inset -18px -20px 30px rgba(104, 32, 6, 0.35),
+    inset 14px 16px 24px rgba(255, 216, 152, 0.35),
+    0 14px 22px rgba(0, 0, 0, 0.35),
+    0 0 24px rgba(255, 149, 41, 0.45);
+}
+.tumor-core::before,
+.tumor-core::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.tumor-core::before {
+  width: 30px;
+  height: 22px;
+  left: 18px;
+  top: 12px;
+  background: radial-gradient(circle at 45% 50%, rgba(255, 255, 244, 0.92) 0 42%, rgba(255, 255, 255, 0) 85%);
+  filter: blur(0.5px);
+}
+.tumor-core::after {
+  width: 86px;
+  height: 86px;
+  left: 4px;
+  top: 6px;
+  border: 1px solid rgba(255, 227, 171, 0.26);
+  box-shadow: inset -10px -14px 20px rgba(126, 45, 15, 0.3);
 }
 
 @media (max-width: 1100px) {

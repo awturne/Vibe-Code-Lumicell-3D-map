@@ -215,7 +215,6 @@ button:disabled { opacity: 0.5; }
   transform-style: preserve-3d;
   transform: rotateX(-22deg) rotateY(35deg);
   cursor: grab;
-  z-index: 2;
 }
 .cavity-model.dragging { cursor: grabbing; }
 .face {
@@ -232,7 +231,9 @@ button:disabled { opacity: 0.5; }
   text-shadow: 0 1px 2px black;
   opacity: 0.98;
   transition: transform .24s ease;
+  backface-visibility: hidden;
 }
+
 .face-front { transform: translateZ(58px); }
 .face-back { transform: rotateY(180deg) translateZ(58px); }
 .face-right { transform: rotateY(90deg) translateZ(58px); }
@@ -251,12 +252,11 @@ button:disabled { opacity: 0.5; }
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 118px;
-  height: 118px;
-  transform: translate(-50%, -50%) scale(0.86);
+  width: 108px;
+  height: 108px;
+  transform: translate3d(-50%, -50%, 0) scale(0.86);
   border-radius: 50%;
   pointer-events: none;
-  z-index: 1;
   opacity: 0;
   transition: opacity .22s ease, transform .22s ease;
   background:
@@ -271,7 +271,7 @@ button:disabled { opacity: 0.5; }
 }
 .model-scene.exploded .tumor-core {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  transform: translate3d(-50%, -50%, 0) scale(1);
 }
 .tumor-core::before,
 .tumor-core::after {

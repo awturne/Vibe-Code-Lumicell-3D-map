@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumicell Cavity Mapper Prototype</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section id="baseline-page" class="page active baseline-layout">
+        <header class="workflow-header cardless">
+          <button class="menu-btn" aria-label="Menu">☰</button>
+          <div class="workflow-steps">
+            <div class="step done"><span>1</span><small>Calibrate bright plate</small></div>
+            <div class="step done"><span>2</span><small>Calibrate dark plate</small></div>
+            <div class="step done"><span>3</span><small>Apply sterile cover</small></div>
+            <div class="step done"><span>4</span><small>Prepare for imaging</small></div>
+            <div class="step active"><span>5</span><small>Establish baseline</small></div>
+          </div>
+          <label class="probe-toggle">Probe Light
+            <input id="probe-toggle" type="checkbox" disabled />
+            <span>mocked</span>
+          </label>
+        </header>
+
+        <aside class="baseline-sidebar">
+          <h2>Establish baseline</h2>
+          <ul>
+            <li>Upload 6 baseline images (PNG/JPG/TIF).</li>
+            <li>Assign each upload to a unique orientation.</li>
+            <li>Drag to center and wheel to zoom inside the circular field.</li>
+            <li>Average intensity is computed inside the circular field.</li>
+            <li>When all six orientations are assigned, continue to live cube map.</li>
+          </ul>
+
+          <div class="capture-controls">
+            <label for="image-upload">Upload baseline images (up to 6)</label>
+            <input id="image-upload" type="file" accept="image/*,.tif,.tiff" multiple />
+            <button id="build-cube-btn" disabled>Build cavity cube from uploads</button>
+            <p id="capture-status" class="status"></p>
+          </div>
+
+          <div id="capture-grid" class="capture-grid"></div>
+        </aside>
+
+        <section class="baseline-viewer">
+          <div class="viewer-stage">
+            <canvas id="preview-canvas" width="900" height="900"></canvas>
+            <p class="viewer-help">Drag to center • Mouse wheel to zoom</p>
+          </div>
+          <p class="meta">Selected image circular avg intensity: <span id="latest-average">--</span></p>
+        </section>
+      </section>
+
+      <section id="live-page" class="page">
+        <div class="live-layout">
+          <div class="card live-step-card">
+            <h2>Cavity map</h2>
+            <p>Live camera feed is hidden for this prototype step.</p>
+          </div>
+
+          <aside class="card cube-overlay-card">
+            <h3>Bird's-Eye Cavity Cube</h3>
+            <p>Drag to rotate. Colors use a jet map (blue = lowest signal, red = highest signal).</p>
+            <div id="cube-scene" class="cube-scene">
+              <div id="cube" class="cube">
+                <div class="face face-front" data-face="inferior"></div>
+                <div class="face face-back" data-face="posterior"></div>
+                <div class="face face-right" data-face="medial"></div>
+                <div class="face face-left" data-face="lateral"></div>
+                <div class="face face-top" data-face="superior"></div>
+                <div class="face face-bottom" data-face="anterior"></div>
+              </div>
+            </div>
+            <ul id="cube-legend" class="cube-legend"></ul>
+          </aside>
+
+          <aside class="card margin-overlay-card">
+            <h3>Tumor + Shave Margins View</h3>
+            <p>Generated with the cube. Drag to rotate and compare jet-mapped signal by margin side.</p>
+            <div id="margin-scene" class="margin-scene">
+              <div id="margin-model" class="margin-model">
+                <div class="margin-face margin-front" data-margin="superficial"></div>
+                <div class="margin-face margin-back" data-margin="posterior"></div>
+                <div class="margin-face margin-left" data-margin="lateral"></div>
+                <div class="margin-face margin-right" data-margin="medial"></div>
+                <div class="margin-face margin-top" data-margin="superior"></div>
+                <div class="margin-face margin-bottom" data-margin="anterior"></div>
+              </div>
+              <div class="tumor-core" aria-hidden="true"></div>
+            </div>
+            <ul id="margin-legend" class="cube-legend"></ul>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

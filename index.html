@@ -81,11 +81,41 @@
               <div class="heatmap-bar"></div>
               <span id="heatmap-max">High</span>
             </div>
+            <section class="patient-panel">
+              <h4>Patient orientation view</h4>
+              <p>Click the cavity on the chest to expand the orientation map.</p>
+              <div class="patient-figure-wrap">
+                <svg class="patient-figure" viewBox="0 0 240 120" aria-hidden="true">
+                  <circle cx="28" cy="60" r="12" />
+                  <rect x="40" y="46" width="92" height="28" rx="14" />
+                  <rect x="126" y="50" width="26" height="14" rx="7" />
+                  <rect x="152" y="53" width="44" height="8" rx="4" />
+                  <rect x="42" y="42" width="20" height="8" rx="4" />
+                </svg>
+                <button id="patient-cavity-btn" class="patient-cavity-btn" type="button" aria-label="Open cavity orientation map"></button>
+              </div>
+            </section>
             <ul id="cube-legend" class="cube-legend"></ul>
           </aside>
         </div>
       </section>
     </main>
+
+
+    <div id="cavity-map-modal" class="cavity-modal" hidden>
+      <div class="cavity-modal-card" role="dialog" aria-modal="true" aria-label="Expanded cavity orientation map">
+        <button id="close-cavity-modal" class="close-cavity-modal" type="button" aria-label="Close">×</button>
+        <h4>Expanded cavity orientation map</h4>
+        <div id="cavity-wheel-large" class="cavity-wheel cavity-wheel-large">
+          <div class="cavity-hole"></div>
+          <span class="wheel-label label-superior">superior</span>
+          <span class="wheel-label label-posterior">posterior</span>
+          <span class="wheel-label label-lateral">lateral</span>
+          <span class="wheel-label label-inferior">inferior</span>
+          <span class="wheel-label label-medial">medial</span>
+        </div>
+      </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js"></script>
     <script src="app.js"></script>

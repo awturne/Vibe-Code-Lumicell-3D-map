@@ -294,6 +294,108 @@ button:disabled { opacity: 0.5; }
     rgb(220, 0, 0) 100%);
 }
 
+
+.patient-panel {
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid #263044;
+}
+.patient-panel h4 { margin: 0 0 0.3rem; font-size: 1rem; }
+.patient-panel p { margin: 0 0 0.6rem; color: #b9c9e8; font-size: 0.88rem; }
+.patient-figure-wrap {
+  position: relative;
+  width: 250px;
+  max-width: 100%;
+}
+.patient-figure {
+  width: 100%;
+  height: auto;
+  fill: #0f1726;
+  stroke: #415677;
+  stroke-width: 1.5;
+}
+.patient-cavity-btn {
+  --cavity-gradient: conic-gradient(from -90deg, #666 0 72deg, #555 72deg 144deg, #444 144deg 216deg, #555 216deg 288deg, #666 288deg 360deg);
+  position: absolute;
+  left: 92px;
+  top: 44px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.45);
+  background: var(--cavity-gradient);
+  box-shadow: 0 0 10px rgba(0,0,0,.45);
+  cursor: pointer;
+}
+.patient-cavity-btn::after {
+  content: "";
+  position: absolute;
+  inset: 33%;
+  border-radius: 50%;
+  background: #050505;
+  border: 1px solid #262626;
+}
+
+.cavity-modal[hidden] { display: none; }
+.cavity-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 8, 18, 0.7);
+  display: grid;
+  place-items: center;
+  z-index: 20;
+}
+.cavity-modal-card {
+  width: min(520px, 92vw);
+  background: #121b2d;
+  border: 1px solid #2e4060;
+  border-radius: 14px;
+  padding: 1rem;
+  position: relative;
+}
+.close-cavity-modal {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.45rem;
+  border: 0;
+  background: transparent;
+  color: #d7e7ff;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.cavity-wheel {
+  --cavity-gradient: conic-gradient(from -90deg, #666 0 72deg, #555 72deg 144deg, #444 144deg 216deg, #555 216deg 288deg, #666 288deg 360deg);
+  position: relative;
+  margin: 0.35rem auto 0;
+  border-radius: 50%;
+  background: var(--cavity-gradient);
+  border: 2px solid #5f7291;
+}
+.cavity-wheel-large { width: 330px; max-width: 80vw; aspect-ratio: 1 / 1; }
+.cavity-hole {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 22%;
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #060606;
+  border: 2px solid #2d2d2d;
+}
+.wheel-label {
+  position: absolute;
+  font-size: 0.9rem;
+  color: #e4edff;
+  text-transform: capitalize;
+  text-shadow: 0 1px 2px #000;
+}
+.label-superior { left: 50%; top: 5%; transform: translateX(-50%); }
+.label-posterior { right: 8%; top: 20%; }
+.label-lateral { right: 4%; bottom: 28%; }
+.label-inferior { left: 50%; bottom: 5%; transform: translateX(-50%); }
+.label-medial { left: 6%; bottom: 28%; }
+
 .cube-legend { margin: .5rem 0 0; padding-left: 1.1rem; color: #a2b1cc; }
 
 @media (max-width: 1100px) {

@@ -8,10 +8,11 @@ This prototype now supports an **upload-first baseline workflow**:
 3. For each upload, drag to center and wheel to zoom/crop inside the circular field.
 4. The app computes average pixel intensity **inside that circular field** for each upload.
 5. When all six orientations are assigned, build the cavity model and transition to live mode.
-6. The live model uses a normalized jet map (blue = lowest average, red = highest average, with cyan/green/yellow in between) and maintains consistent side mapping: front=superficial/inferior, back=posterior, left=lateral, right=medial, top=superior, bottom=anterior.
+6. The live model uses a normalized jet map (blue = lowest average, red = highest average, with cyan/green/yellow in between) and maintains side mapping with display labels updated as requested: front=inferior data labeled anterior, back=posterior, left=lateral, right=medial, top=superior, bottom=anterior data labeled inferior.
 7. Users can drag-rotate one unified 3D model and toggle between **collapsed cube** and **exploded + cavity** views, where a central black cavity opening is revealed by the exploded faces. Faces render double-sided so all six sides remain visible while rotating.
 8. Baseline image crop preview is intentionally smaller for a tidier upload workspace, and the blue stage fully contains the crop circle diameter.
 9. A jet heatmap legend bar is shown below the model with dynamic low/high intensity values.
+10. A patient silhouette orientation graphic is included; clicking the chest cavity opens an expanded circular orientation heatmap.
 
 ## Run locally
 

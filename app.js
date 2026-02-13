@@ -442,7 +442,7 @@ function updateOrientationGraphic(intensityMap) {
 
   const posterior = intensityMap.get("posterior") ?? { normalized: 0.5 };
   const posteriorColor = jetColor(posterior.normalized);
-  const gradient = `conic-gradient(from -90deg, ${stops.join(", ")})`;
+  const gradient = `conic-gradient(from -135deg, ${stops.join(", ")})`;
 
   patientCavityBtn.style.setProperty("--cavity-gradient", gradient);
   patientCavityBtn.style.setProperty("--posterior-color", posteriorColor);

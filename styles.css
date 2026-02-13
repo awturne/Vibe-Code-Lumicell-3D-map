@@ -304,24 +304,29 @@ button:disabled { opacity: 0.5; }
 .patient-panel p { margin: 0 0 0.6rem; color: #b9c9e8; font-size: 0.88rem; }
 .patient-figure-wrap {
   position: relative;
-  width: 250px;
+  width: 230px;
   max-width: 100%;
+  margin-top: 0.2rem;
 }
 .patient-figure {
   width: 100%;
   height: auto;
-  fill: #0f1726;
-  stroke: #415677;
-  stroke-width: 1.5;
+  fill: #070a12;
+  stroke: #2f3b50;
+  stroke-width: 1.4;
+}
+.patient-figure .shadow {
+  fill: rgba(8, 12, 22, 0.95);
+  stroke: none;
 }
 .patient-cavity-btn {
   --cavity-gradient: conic-gradient(from -135deg, #666 0 90deg, #555 90deg 180deg, #444 180deg 270deg, #555 270deg 360deg);
   --posterior-color: #333;
   position: absolute;
-  left: 92px;
-  top: 44px;
-  width: 30px;
-  height: 30px;
+  left: 106px;
+  top: 114px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   border: 1px solid rgba(255,255,255,.45);
   background: var(--cavity-gradient);
@@ -331,7 +336,7 @@ button:disabled { opacity: 0.5; }
 .patient-cavity-btn::after {
   content: "";
   position: absolute;
-  inset: 33%;
+  inset: 30%;
   border-radius: 50%;
   background: #050505;
   border: 1px solid #262626;

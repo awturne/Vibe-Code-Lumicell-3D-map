@@ -62,6 +62,7 @@ function tiffArrayBufferToDataUrl(buffer) {
 
   UTIF.decodeImage(buffer, ifds[0]);
   const rgba = UTIF.toRGBA8(ifds[0]);
+  const displayRgba = autoContrastRgba(rgba);
   const width = ifds[0].width;
   const height = ifds[0].height;
 
@@ -69,9 +70,37 @@ function tiffArrayBufferToDataUrl(buffer) {
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext("2d");
-  const imageData = new ImageData(new Uint8ClampedArray(rgba), width, height);
+  const imageData = new ImageData(new Uint8ClampedArray(displayRgba), width, height);
   ctx.putImageData(imageData, 0, 0);
   return canvas.toDataURL("image/png");
+}
+
+function autoContrastRgba(rgba) {
+  if (!rgba || !rgba.length) return rgba;
+
+  let min = 255;
+  let max = 0;
+
+  for (let i = 0; i < rgba.length; i += 4) {
+    const luminance = (rgba[i] + rgba[i + 1] + rgba[i + 2]) / 3;
+    if (luminance < min) min = luminance;
+    if (luminance > max) max = luminance;
+  }
+
+  const dynamicRange = max - min;
+  if (dynamicRange < 2) return rgba;
+
+  const output = new Uint8ClampedArray(rgba.length);
+  const scale = 255 / dynamicRange;
+
+  for (let i = 0; i < rgba.length; i += 4) {
+    output[i] = Math.round((rgba[i] - min) * scale);
+    output[i + 1] = Math.round((rgba[i + 1] - min) * scale);
+    output[i + 2] = Math.round((rgba[i + 2] - min) * scale);
+    output[i + 3] = rgba[i + 3];
+  }
+
+  return output;
 }
 
 function loadImage(src) {

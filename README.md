@@ -7,10 +7,10 @@ This prototype now supports an **upload-first baseline workflow**:
    - Upload supports PNG/JPG/TIF/TIFF files and applies auto-contrast for TIFF previews so dim grayscale data remains visible.
 3. For each upload, drag to center and wheel to zoom/crop inside the circular field.
 4. The app computes average pixel intensity **inside that circular field** for each upload.
-5. When all six orientations are assigned, build the cube and transition to cavity map mode.
-6. The cube face colors use a normalized jet map (blue = lowest average, red = highest average, with cyan/green/yellow in between), and the cube face placement matches the exploded margin model (front=superficial/inferior, back=posterior, left=lateral, right=medial, top=superior, bottom=anterior).
-7. The live step also generates a second rotatable tumor + shave-margin model at the same time, with a 3D-styled center tumor sphere fixed in the middle of the exploded margin faces.
-8. Baseline image crop preview is intentionally smaller for a tidier upload workspace.
+5. When all six orientations are assigned, build the cavity model and transition to live mode.
+6. The live model uses a normalized jet map (blue = lowest average, red = highest average, with cyan/green/yellow in between) and maintains consistent side mapping: front=superficial/inferior, back=posterior, left=lateral, right=medial, top=superior, bottom=anterior.
+7. Users can drag-rotate one unified 3D model and toggle between **collapsed cube** and **exploded + tumor** views.
+8. Baseline image crop preview is intentionally smaller for a tidier upload workspace, and the blue stage fully contains the crop circle diameter.
 
 ## Run locally
 

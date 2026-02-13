@@ -12,20 +12,16 @@ const previewCtx = previewCanvas.getContext("2d");
 const latestAverageLabel = document.getElementById("latest-average");
 const captureGrid = document.getElementById("capture-grid");
 
-const cubeEl = document.getElementById("cube");
+const cavityModelEl = document.getElementById("cavity-model");
 const cubeLegend = document.getElementById("cube-legend");
-const marginModelEl = document.getElementById("margin-model");
-const marginLegend = document.getElementById("margin-legend");
+const modelSceneEl = document.getElementById("model-scene");
+const viewModeToggle = document.getElementById("view-mode-toggle");
+const viewModeLabel = document.getElementById("view-mode-label");
 
-let cubeRotationX = -22;
-let cubeRotationY = 35;
-let draggingCube = false;
-let cubeDragOrigin = { x: 0, y: 0 };
-
-let marginRotationX = -18;
-let marginRotationY = 28;
-let draggingMargin = false;
-let marginDragOrigin = { x: 0, y: 0 };
+let modelRotationX = -22;
+let modelRotationY = 35;
+let draggingModel = false;
+let modelDragOrigin = { x: 0, y: 0 };
 
 let selectedTileIndex = -1;
 let selectedImage = null;
@@ -436,47 +432,22 @@ function updateCubeFaces(intensityMap) {
   }
 }
 
-function updateMarginModel(intensityMap) {
-  marginLegend.innerHTML = "";
-
-  const marginToOrientation = {
-    superficial: "inferior",
-    posterior: "posterior",
-    lateral: "lateral",
-    medial: "medial",
-    superior: "superior",
-    anterior: "anterior"
-  };
-
-  for (const face of document.querySelectorAll(".margin-face")) {
-    const margin = face.dataset.margin;
-    const orientation = marginToOrientation[margin] || "anterior";
-    const reading = intensityMap.get(orientation) ?? { intensity: 0, normalized: 0.5 };
-
-    face.textContent = margin;
-    face.style.background = jetColor(reading.normalized);
-
-    const li = document.createElement("li");
-    li.textContent = `${margin}: ${reading.intensity.toFixed(1)} avg (${Math.round(reading.normalized * 100)}% jet · ${orientation})`;
-    marginLegend.append(li);
-  }
-}
-
 function goToLivePage() {
   buildCapturesFromUploads();
   baselinePage.classList.remove("active");
   livePage.classList.add("active");
   const intensityMap = buildNormalizedIntensityMap();
   updateCubeFaces(intensityMap);
-  updateMarginModel(intensityMap);
 }
 
-function applyCubeTransform() {
-  cubeEl.style.transform = `rotateX(${cubeRotationX}deg) rotateY(${cubeRotationY}deg)`;
+function applyModelTransform() {
+  cavityModelEl.style.transform = `rotateX(${modelRotationX}deg) rotateY(${modelRotationY}deg)`;
 }
 
-function applyMarginTransform() {
-  marginModelEl.style.transform = `translate(-50%, -50%) rotateX(${marginRotationX}deg) rotateY(${marginRotationY}deg)`;
+function syncViewModeLabel() {
+  const exploded = viewModeToggle.checked;
+  modelSceneEl.classList.toggle("exploded", exploded);
+  viewModeLabel.textContent = exploded ? "Exploded + tumor" : "Collapsed cube";
 }
 
 function clampScale(value, minScale) {
@@ -527,56 +498,35 @@ previewCanvas.addEventListener("wheel", async (event) => {
   updateSelectedAverage();
 }, { passive: false });
 
-cubeEl.addEventListener("pointerdown", (event) => {
-  draggingCube = true;
-  cubeDragOrigin = { x: event.clientX, y: event.clientY };
-  cubeEl.classList.add("dragging");
-  cubeEl.setPointerCapture(event.pointerId);
+cavityModelEl.addEventListener("pointerdown", (event) => {
+  draggingModel = true;
+  modelDragOrigin = { x: event.clientX, y: event.clientY };
+  cavityModelEl.classList.add("dragging");
+  cavityModelEl.setPointerCapture(event.pointerId);
 });
 
-cubeEl.addEventListener("pointermove", (event) => {
-  if (!draggingCube) return;
-  const dx = event.clientX - cubeDragOrigin.x;
-  const dy = event.clientY - cubeDragOrigin.y;
-  cubeDragOrigin = { x: event.clientX, y: event.clientY };
-  cubeRotationY += dx * 0.5;
-  cubeRotationX -= dy * 0.5;
-  applyCubeTransform();
+cavityModelEl.addEventListener("pointermove", (event) => {
+  if (!draggingModel) return;
+  const dx = event.clientX - modelDragOrigin.x;
+  const dy = event.clientY - modelDragOrigin.y;
+  modelDragOrigin = { x: event.clientX, y: event.clientY };
+  modelRotationY += dx * 0.5;
+  modelRotationX -= dy * 0.5;
+  applyModelTransform();
 });
 
-cubeEl.addEventListener("pointerup", (event) => {
-  draggingCube = false;
-  cubeEl.classList.remove("dragging");
-  cubeEl.releasePointerCapture(event.pointerId);
+cavityModelEl.addEventListener("pointerup", (event) => {
+  draggingModel = false;
+  cavityModelEl.classList.remove("dragging");
+  cavityModelEl.releasePointerCapture(event.pointerId);
 });
 
-marginModelEl.addEventListener("pointerdown", (event) => {
-  draggingMargin = true;
-  marginDragOrigin = { x: event.clientX, y: event.clientY };
-  marginModelEl.classList.add("dragging");
-  marginModelEl.setPointerCapture(event.pointerId);
-});
-
-marginModelEl.addEventListener("pointermove", (event) => {
-  if (!draggingMargin) return;
-  const dx = event.clientX - marginDragOrigin.x;
-  const dy = event.clientY - marginDragOrigin.y;
-  marginDragOrigin = { x: event.clientX, y: event.clientY };
-  marginRotationY += dx * 0.45;
-  marginRotationX -= dy * 0.45;
-  applyMarginTransform();
-});
-
-marginModelEl.addEventListener("pointerup", (event) => {
-  draggingMargin = false;
-  marginModelEl.classList.remove("dragging");
-  marginModelEl.releasePointerCapture(event.pointerId);
-});
+viewModeToggle.addEventListener("change", syncViewModeLabel);
 
 imageUpload.addEventListener("change", handleUpload);
 buildCubeBtn.addEventListener("click", goToLivePage);
 
 renderCapturedGrid();
 refreshBuildState();
-applyCubeTransform();
-applyMarginTransform();
+applyModelTransform();
+syncViewModeLabel();

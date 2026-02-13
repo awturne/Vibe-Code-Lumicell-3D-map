@@ -413,6 +413,11 @@ function buildNormalizedIntensityMap() {
   return map;
 }
 
+function faceLabel(orientation) {
+  if (orientation === "inferior") return "superficial";
+  return orientation;
+}
+
 function updateCubeFaces(intensityMap) {
   cubeLegend.innerHTML = "";
 
@@ -420,11 +425,13 @@ function updateCubeFaces(intensityMap) {
     const orientation = face.dataset.face;
     const reading = intensityMap.get(orientation) ?? { intensity: 0, normalized: 0.5 };
 
-    face.textContent = orientation;
+    const label = faceLabel(orientation);
+    face.textContent = label;
     face.style.background = jetColor(reading.normalized);
 
     const li = document.createElement("li");
-    li.textContent = `${orientation}: ${reading.intensity.toFixed(1)} avg (${Math.round(reading.normalized * 100)}% jet)`;
+    const orientationHint = label === orientation ? "" : ` · ${orientation}`;
+    li.textContent = `${label}: ${reading.intensity.toFixed(1)} avg (${Math.round(reading.normalized * 100)}% jet${orientationHint})`;
     cubeLegend.append(li);
   }
 }

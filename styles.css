@@ -153,9 +153,15 @@ button:disabled { opacity: 0.5; }
 .meta { margin: 0.45rem 0; color: var(--muted); }
 
 .card { background: #171c27; border: 1px solid #263044; border-radius: 12px; padding: 1rem; }
-.live-layout { position: relative; padding: 1rem; }
+.live-layout {
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) 340px 340px;
+  gap: 1rem;
+  align-items: start;
+}
 .live-step-card { min-height: 120px; }
-.cube-overlay-card { position: absolute; top: 2rem; right: 2rem; width: 320px; }
+.cube-overlay-card, .margin-overlay-card { width: 100%; }
 .cube-scene { height: 220px; display: grid; place-items: center; perspective: 800px; }
 .cube { position: relative; width: 120px; height: 120px; transform-style: preserve-3d; transform: rotateX(-22deg) rotateY(35deg); cursor: grab; }
 .cube.dragging { cursor: grabbing; }
@@ -168,9 +174,52 @@ button:disabled { opacity: 0.5; }
 .face-bottom { transform: rotateX(-90deg) translateZ(60px); }
 .cube-legend { margin: .5rem 0 0; padding-left: 1.1rem; color: #a2b1cc; }
 
+.margin-scene { height: 220px; display: grid; place-items: center; perspective: 900px; }
+.margin-model {
+  position: relative;
+  width: 170px;
+  height: 170px;
+  transform-style: preserve-3d;
+  transform: rotateX(-18deg) rotateY(28deg);
+  cursor: grab;
+}
+.margin-model.dragging { cursor: grabbing; }
+.margin-face {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  display: grid;
+  place-items: center;
+  text-transform: capitalize;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-shadow: 0 1px 2px #000;
+  opacity: 0.95;
+}
+.margin-front { transform: translateZ(75px); }
+.margin-back { transform: rotateY(180deg) translateZ(75px); }
+.margin-left { transform: rotateY(-90deg) translateZ(75px); }
+.margin-right { transform: rotateY(90deg) translateZ(75px); }
+.margin-top { transform: rotateX(90deg) translateZ(75px); }
+.margin-bottom { transform: rotateX(-90deg) translateZ(75px); }
+.tumor-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 88px;
+  height: 88px;
+  transform: translate(-50%, -50%) translateZ(0);
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ffe6a1 0 18%, #f8a242 45%, #ce6120 85%);
+  border: 1px solid rgba(255, 238, 198, 0.8);
+  box-shadow: 0 0 28px rgba(255, 149, 41, 0.45);
+}
+
 @media (max-width: 1100px) {
   .baseline-layout { grid-template-columns: 1fr; }
   .viewer-stage { height: 65vh; }
-  .cube-overlay-card { position: static; width: 100%; margin-top: 0.8rem; }
+  .live-layout { grid-template-columns: 1fr; }
   .workflow-steps { grid-template-columns: repeat(2, minmax(140px, 1fr)); gap: .5rem; }
 }

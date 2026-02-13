@@ -9,6 +9,7 @@ This prototype now supports an **upload-first baseline workflow**:
 4. The app computes average pixel intensity **inside that circular field** for each upload.
 5. When all six orientations are assigned, build the cube and transition to cavity map mode.
 6. The cube face colors use a normalized jet map (blue = lowest average, red = highest average, with cyan/green/yellow in between).
+7. The live step also generates a second rotatable tumor + shave-margin model at the same time, with front=superficial, back=posterior, left=lateral, right=medial, top=superior, and bottom=anterior.
 
 ## Run locally
 

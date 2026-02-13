@@ -55,16 +55,18 @@
 
       <section id="live-page" class="page">
         <div class="live-layout">
-          <div class="card live-step-card">
-            <h2>Cavity map</h2>
-            <p>Live camera feed is hidden for this prototype step.</p>
-          </div>
-
-          <aside class="card cube-overlay-card">
-            <h3>Bird's-Eye Cavity Cube</h3>
-            <p>Drag to rotate. Colors use a jet map (blue = lowest signal, red = highest signal).</p>
-            <div id="cube-scene" class="cube-scene">
-              <div id="cube" class="cube">
+          <aside class="card model-overlay-card">
+            <div class="model-header">
+              <h3>Cavity Map Model</h3>
+              <label class="view-toggle" for="view-mode-toggle">
+                <input id="view-mode-toggle" type="checkbox" />
+                <span class="track"><span class="thumb"></span></span>
+                <span id="view-mode-label">Collapsed cube</span>
+              </label>
+            </div>
+            <p>Drag to rotate. Toggle between collapsed cube and exploded margin view with centered tumor.</p>
+            <div id="model-scene" class="model-scene">
+              <div id="cavity-model" class="cavity-model">
                 <div class="face face-front" data-face="inferior"></div>
                 <div class="face face-back" data-face="posterior"></div>
                 <div class="face face-right" data-face="medial"></div>
@@ -72,25 +74,9 @@
                 <div class="face face-top" data-face="superior"></div>
                 <div class="face face-bottom" data-face="anterior"></div>
               </div>
-            </div>
-            <ul id="cube-legend" class="cube-legend"></ul>
-          </aside>
-
-          <aside class="card margin-overlay-card">
-            <h3>Tumor + Shave Margins View</h3>
-            <p>Generated with the cube. Drag to rotate and compare jet-mapped signal by margin side.</p>
-            <div id="margin-scene" class="margin-scene">
-              <div id="margin-model" class="margin-model">
-                <div class="margin-face margin-front" data-margin="superficial"></div>
-                <div class="margin-face margin-back" data-margin="posterior"></div>
-                <div class="margin-face margin-left" data-margin="lateral"></div>
-                <div class="margin-face margin-right" data-margin="medial"></div>
-                <div class="margin-face margin-top" data-margin="superior"></div>
-                <div class="margin-face margin-bottom" data-margin="anterior"></div>
-              </div>
               <div class="tumor-core" aria-hidden="true"></div>
             </div>
-            <ul id="margin-legend" class="cube-legend"></ul>
+            <ul id="cube-legend" class="cube-legend"></ul>
           </aside>
         </div>
       </section>

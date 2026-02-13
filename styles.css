@@ -231,8 +231,10 @@ button:disabled { opacity: 0.5; }
   text-shadow: 0 1px 2px black;
   opacity: 0.98;
   transition: transform .24s ease;
-  backface-visibility: hidden;
+  backface-visibility: visible;
+  transform-style: preserve-3d;
 }
+
 
 .face-front { transform: translateZ(58px); }
 .face-back { transform: rotateY(180deg) translateZ(58px); }

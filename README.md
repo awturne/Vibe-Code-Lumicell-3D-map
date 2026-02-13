@@ -41,3 +41,35 @@ Use this flow when GitHub Desktop shows multiple branches and you are not sure w
 - Basler connection and true live feed are mocked.
 - The live feed panel is intentionally hidden in this iteration.
 - Baseline to cube mapping is driven by uploaded images and circular average intensity.
+
+## If the TIFF auto-contrast fix is not showing on GitHub
+
+Use these PowerShell commands to force your local `main` to match GitHub, verify whether GitHub actually has the fix, and push if needed:
+
+```powershell
+cd "C:\Users\AveryTurner\OneDrive - LUMICELL INC\Documents\GitHub\Vibe-Code-Lumicell-3D-map"
+git fetch origin
+git checkout main
+git reset --hard origin/main
+git show origin/main:app.js | Select-String "autoContrastRgba"
+```
+
+- If that last command prints nothing, GitHub `main` still does not contain the fix.
+- To publish your local fix branch to `main`:
+
+```powershell
+git checkout tiff-fix
+git pull origin tiff-fix
+git checkout main
+git merge tiff-fix
+git push origin main
+```
+
+Then run locally and bypass cache:
+
+```powershell
+python -m http.server 4173
+```
+
+Open: `http://localhost:4173/?v=3`.
+

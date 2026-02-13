@@ -12,7 +12,7 @@ This prototype now supports an **upload-first baseline workflow**:
 7. Users can drag-rotate one unified 3D model and toggle between **collapsed cube** and **exploded + cavity** views, where a central black cavity opening is revealed by the exploded faces. Faces render double-sided so all six sides remain visible while rotating.
 8. Baseline image crop preview is intentionally smaller for a tidier upload workspace, and the blue stage fully contains the crop circle diameter.
 9. A jet heatmap legend bar is shown below the model with dynamic low/high intensity values.
-10. A standing woman-style patient silhouette orientation graphic is included; the circular heatmap is overlaid on the chest, and clicking it opens an expanded 5-orientation circular map rotated 45° so superior is centered at top and inferior at bottom, with posterior at the center.
+10. A standing woman-style patient silhouette orientation graphic is included; the circular heatmap is overlaid on the chest, and clicking it opens an expanded 5-orientation circular map aligned so superior is centered at top and inferior at bottom, with posterior at the center.
 
 ## Run locally
 

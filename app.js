@@ -19,6 +19,10 @@ const viewModeToggle = document.getElementById("view-mode-toggle");
 const viewModeLabel = document.getElementById("view-mode-label");
 const heatmapMin = document.getElementById("heatmap-min");
 const heatmapMax = document.getElementById("heatmap-max");
+const patientCavityBtn = document.getElementById("patient-cavity-btn");
+const cavityMapModal = document.getElementById("cavity-map-modal");
+const closeCavityModalBtn = document.getElementById("close-cavity-modal");
+const cavityWheelLarge = document.getElementById("cavity-wheel-large");
 
 let modelRotationX = -22;
 let modelRotationY = 35;
@@ -412,7 +416,8 @@ function buildNormalizedIntensityMap() {
 }
 
 function faceLabel(orientation) {
-  if (orientation === "inferior") return "superficial";
+  if (orientation === "inferior") return "anterior";
+  if (orientation === "anterior") return "inferior";
   return orientation;
 }
 
@@ -424,9 +429,26 @@ function updateHeatmapLegend(intensityMap) {
   heatmapMax.textContent = `High ${max.toFixed(1)}`;
 }
 
+function updateOrientationGraphic(intensityMap) {
+  const sequence = ["superior", "posterior", "lateral", "inferior", "medial"];
+  const sectorSize = 360 / sequence.length;
+  const stops = sequence.map((orientation, index) => {
+    const reading = intensityMap.get(orientation) ?? { normalized: 0.5 };
+    const color = jetColor(reading.normalized);
+    const start = (index * sectorSize).toFixed(1);
+    const end = ((index + 1) * sectorSize).toFixed(1);
+    return `${color} ${start}deg ${end}deg`;
+  });
+
+  const gradient = `conic-gradient(from -90deg, ${stops.join(", ")})`;
+  patientCavityBtn.style.setProperty("--cavity-gradient", gradient);
+  cavityWheelLarge.style.setProperty("--cavity-gradient", gradient);
+}
+
 function updateCubeFaces(intensityMap) {
   cubeLegend.innerHTML = "";
   updateHeatmapLegend(intensityMap);
+  updateOrientationGraphic(intensityMap);
 
   for (const face of document.querySelectorAll(".face")) {
     const orientation = face.dataset.face;
@@ -533,6 +555,24 @@ cavityModelEl.addEventListener("pointerup", (event) => {
 });
 
 viewModeToggle.addEventListener("change", syncViewModeLabel);
+
+patientCavityBtn.addEventListener("click", () => {
+  cavityMapModal.hidden = false;
+});
+
+closeCavityModalBtn.addEventListener("click", () => {
+  cavityMapModal.hidden = true;
+});
+
+cavityMapModal.addEventListener("click", (event) => {
+  if (event.target === cavityMapModal) {
+    cavityMapModal.hidden = true;
+  }
+});
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") cavityMapModal.hidden = true;
+});
 
 imageUpload.addEventListener("change", handleUpload);
 buildCubeBtn.addEventListener("click", goToLivePage);

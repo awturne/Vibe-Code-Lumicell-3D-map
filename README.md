@@ -8,7 +8,7 @@ This prototype now supports an **upload-first baseline workflow**:
 3. For each upload, drag to center and wheel to zoom/crop inside the circular field.
 4. The app computes average pixel intensity **inside that circular field** for each upload.
 5. When all six orientations are assigned, build the cube and transition to cavity map mode.
-6. The cube face color intensity (red scale) reflects the assigned baseline averages.
+6. The cube face colors use a normalized jet map (blue = lowest average, red = highest average, with cyan/green/yellow in between).
 
 ## Run locally
 

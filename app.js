@@ -377,23 +377,38 @@ function buildCapturesFromUploads() {
   }
 }
 
-function intensityToColor(intensity) {
-  const normalized = Math.round((intensity / 255) * 255);
-  const alpha = (0.22 + (intensity / 255) * 0.78).toFixed(2);
-  return `rgba(${normalized}, 0, 0, ${alpha})`;
+function clamp01(value) {
+  return Math.min(Math.max(value, 0), 1);
+}
+
+function jetColor(normalizedIntensity) {
+  const t = clamp01(normalizedIntensity);
+  const r = clamp01(1.5 - Math.abs(4 * t - 3));
+  const g = clamp01(1.5 - Math.abs(4 * t - 2));
+  const b = clamp01(1.5 - Math.abs(4 * t - 1));
+
+  return `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
 }
 
 function updateCubeFaces() {
   cubeLegend.innerHTML = "";
+
+  const allIntensities = orientations.map((orientation) => captures.get(orientation)?.avg ?? 0);
+  const minIntensity = Math.min(...allIntensities);
+  const maxIntensity = Math.max(...allIntensities);
+  const range = maxIntensity - minIntensity;
+
   for (const face of document.querySelectorAll(".face")) {
     const orientation = face.dataset.face;
     const record = captures.get(orientation);
     const intensity = record ? record.avg : 0;
+    const normalized = range > 0 ? (intensity - minIntensity) / range : 0.5;
+
     face.textContent = orientation;
-    face.style.background = intensityToColor(intensity);
+    face.style.background = jetColor(normalized);
 
     const li = document.createElement("li");
-    li.textContent = `${orientation}: ${intensity.toFixed(1)} avg`;
+    li.textContent = `${orientation}: ${intensity.toFixed(1)} avg (${Math.round(normalized * 100)}% jet)`;
     cubeLegend.append(li);
   }
 }

@@ -64,7 +64,7 @@
                 <span id="view-mode-label">Collapsed cube</span>
               </label>
             </div>
-            <p>Drag to rotate. Toggle between collapsed cube and exploded margin view with centered tumor.</p>
+            <p>Drag to rotate. Toggle between collapsed cube and exploded cavity view with central cavity opening.</p>
             <div id="model-scene" class="model-scene">
               <div id="cavity-model" class="cavity-model">
                 <div class="face face-front" data-face="inferior"></div>
@@ -73,8 +73,13 @@
                 <div class="face face-left" data-face="lateral"></div>
                 <div class="face face-top" data-face="superior"></div>
                 <div class="face face-bottom" data-face="anterior"></div>
-                <div class="tumor-core" aria-hidden="true"></div>
+                <div class="cavity-core" aria-hidden="true"></div>
               </div>
+            </div>
+            <div class="heatmap-legend" aria-label="Jet heatmap scale">
+              <span id="heatmap-min">Low</span>
+              <div class="heatmap-bar"></div>
+              <span id="heatmap-max">High</span>
             </div>
             <ul id="cube-legend" class="cube-legend"></ul>
           </aside>

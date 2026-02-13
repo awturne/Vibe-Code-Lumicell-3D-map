@@ -17,6 +17,8 @@ const cubeLegend = document.getElementById("cube-legend");
 const modelSceneEl = document.getElementById("model-scene");
 const viewModeToggle = document.getElementById("view-mode-toggle");
 const viewModeLabel = document.getElementById("view-mode-label");
+const heatmapMin = document.getElementById("heatmap-min");
+const heatmapMax = document.getElementById("heatmap-max");
 
 let modelRotationX = -22;
 let modelRotationY = 35;
@@ -414,8 +416,17 @@ function faceLabel(orientation) {
   return orientation;
 }
 
+function updateHeatmapLegend(intensityMap) {
+  const values = Array.from(intensityMap.values()).map((reading) => reading.intensity);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  heatmapMin.textContent = `Low ${min.toFixed(1)}`;
+  heatmapMax.textContent = `High ${max.toFixed(1)}`;
+}
+
 function updateCubeFaces(intensityMap) {
   cubeLegend.innerHTML = "";
+  updateHeatmapLegend(intensityMap);
 
   for (const face of document.querySelectorAll(".face")) {
     const orientation = face.dataset.face;
@@ -447,7 +458,7 @@ function applyModelTransform() {
 function syncViewModeLabel() {
   const exploded = viewModeToggle.checked;
   modelSceneEl.classList.toggle("exploded", exploded);
-  viewModeLabel.textContent = exploded ? "Exploded + tumor" : "Collapsed cube";
+  viewModeLabel.textContent = exploded ? "Exploded + cavity" : "Collapsed cube";
 }
 
 function clampScale(value, minScale) {

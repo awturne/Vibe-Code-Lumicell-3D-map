@@ -250,49 +250,48 @@ button:disabled { opacity: 0.5; }
 .model-scene.exploded .face-top { transform: rotateX(90deg) translateZ(102px); }
 .model-scene.exploded .face-bottom { transform: rotateX(-90deg) translateZ(102px); }
 
-.tumor-core {
+.cavity-core {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 108px;
-  height: 108px;
+  width: 86px;
+  height: 86px;
   transform: translate3d(-50%, -50%, 0) scale(0.86);
   border-radius: 50%;
   pointer-events: none;
   opacity: 0;
   transition: opacity .22s ease, transform .22s ease;
-  background:
-    radial-gradient(circle at 32% 30%, rgba(255, 253, 231, 0.94) 0 14%, rgba(255, 214, 132, 0.9) 22%, rgba(236, 138, 47, 0.95) 58%, rgba(157, 63, 19, 0.98) 100%),
-    repeating-radial-gradient(circle at 62% 68%, rgba(255, 229, 168, 0.24) 0 5px, rgba(183, 72, 22, 0.2) 5px 10px);
-  border: 2px solid rgba(255, 229, 176, 0.9);
+  background: radial-gradient(circle at 38% 35%, #1d1d1d 0 24%, #040404 65%, #000 100%);
+  border: 2px solid rgba(38, 38, 38, 0.9);
   box-shadow:
-    inset -22px -20px 34px rgba(99, 35, 8, 0.38),
-    inset 12px 14px 24px rgba(255, 226, 154, 0.24),
-    0 18px 28px rgba(0, 0, 0, 0.38),
-    0 0 34px rgba(255, 145, 40, 0.38);
+    inset -10px -10px 16px rgba(0, 0, 0, 0.85),
+    inset 8px 8px 12px rgba(38, 38, 38, 0.45),
+    0 0 16px rgba(0, 0, 0, 0.55);
 }
-.model-scene.exploded .tumor-core {
+.model-scene.exploded .cavity-core {
   opacity: 1;
   transform: translate3d(-50%, -50%, 0) scale(1);
 }
-.tumor-core::before,
-.tumor-core::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
+
+.heatmap-legend {
+  margin-top: 0.4rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+  color: #bdd0f2;
+  font-size: 0.85rem;
 }
-.tumor-core::before {
-  width: 40px;
-  height: 28px;
-  left: 20px;
-  top: 16px;
-  background: radial-gradient(circle at 48% 52%, rgba(255, 255, 245, 0.92) 0 45%, rgba(255, 255, 255, 0) 88%);
-  filter: blur(0.6px);
-}
-.tumor-core::after {
-  inset: 8px;
-  border: 1px solid rgba(255, 225, 163, 0.26);
-  box-shadow: inset -12px -12px 20px rgba(112, 42, 14, 0.25);
+.heatmap-bar {
+  height: 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(90deg,
+    rgb(0, 0, 160) 0%,
+    rgb(0, 150, 255) 25%,
+    rgb(70, 255, 170) 45%,
+    rgb(255, 230, 0) 72%,
+    rgb(220, 0, 0) 100%);
 }
 
 .cube-legend { margin: .5rem 0 0; padding-left: 1.1rem; color: #a2b1cc; }

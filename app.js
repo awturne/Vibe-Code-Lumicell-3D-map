@@ -416,8 +416,6 @@ function buildNormalizedIntensityMap() {
 }
 
 function faceLabel(orientation) {
-  if (orientation === "inferior") return "anterior";
-  if (orientation === "anterior") return "inferior";
   return orientation;
 }
 

@@ -430,7 +430,7 @@ function updateHeatmapLegend(intensityMap) {
 }
 
 function updateOrientationGraphic(intensityMap) {
-  const sequence = ["superior", "posterior", "lateral", "inferior", "medial"];
+  const sequence = ["superior", "lateral", "inferior", "medial"];
   const sectorSize = 360 / sequence.length;
   const stops = sequence.map((orientation, index) => {
     const reading = intensityMap.get(orientation) ?? { normalized: 0.5 };
@@ -440,9 +440,15 @@ function updateOrientationGraphic(intensityMap) {
     return `${color} ${start}deg ${end}deg`;
   });
 
+  const posterior = intensityMap.get("posterior") ?? { normalized: 0.5 };
+  const posteriorColor = jetColor(posterior.normalized);
   const gradient = `conic-gradient(from -90deg, ${stops.join(", ")})`;
+
   patientCavityBtn.style.setProperty("--cavity-gradient", gradient);
+  patientCavityBtn.style.setProperty("--posterior-color", posteriorColor);
+
   cavityWheelLarge.style.setProperty("--cavity-gradient", gradient);
+  cavityWheelLarge.style.setProperty("--posterior-color", posteriorColor);
 }
 
 function updateCubeFaces(intensityMap) {

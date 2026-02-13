@@ -18,6 +18,24 @@ python3 -m http.server 4173
 
 Open `http://localhost:4173`.
 
+## GitHub Desktop quick sync (to avoid branch confusion)
+
+Use this flow when GitHub Desktop shows multiple branches and you are not sure what is deployed:
+
+1. In **Current Branch**, switch to `main`.
+2. Click **Fetch origin**.
+3. Click **Branch > Update from default branch**.
+4. Open **Repository > Repository settings... > Remotes** and verify:
+   - Name: `origin`
+   - URL: `https://github.com/awturne/Vibe-Code-Lumicell-3D-map.git`
+5. If your latest work is on another branch (for example `tiff-fix`), merge it into `main`:
+   - **Branch > Choose a branch to merge into main**
+   - Select `tiff-fix`
+   - Commit merge
+   - Click **Push origin**
+6. In GitHub Pages settings, make sure Pages serves `main` from `/ (root)`.
+7. Reload the site and hard-refresh (`Ctrl+Shift+R`) to clear cached JavaScript.
+
 ## Current scope
 
 - Basler connection and true live feed are mocked.
